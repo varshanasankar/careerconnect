@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Login | CareerConnect{% endblock %}
+{% block meta_description %}Log in to your CareerConnect account to manage applications, saved jobs, and your career profile.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-5 animate-fade-in">
+    <!-- Login form -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm p-4 p-md-5">
+            <div class="text-center mb-4">
+                <div class="mx-auto mb-3" style="width:3.5rem;height:3.5rem;background:rgba(47,109,241,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <i class="fa fa-lock text-primary fa-lg"></i>
+                </div>
+                <h2 class="fw-bold mb-1">Welcome back</h2>
+                <p class="text-muted">Log in to manage your applications and profile.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('login') }}" id="loginForm" novalidate>
+                <div class="mb-3">
+                    <label class="form-label fw-medium" for="login-email">Email</label>
+                    <input type="email" name="email" id="login-email" class="form-control"
+                           placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-medium" for="login-password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="login-password" class="form-control"
+                               placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary btn-lg" type="submit" id="login-submit-btn">
+                        <i class="fa fa-arrow-right-to-bracket me-1"></i>Login
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="mb-0 text-muted small">New to CareerConnect? <a href="{{ url_for('register') }}" class="fw-semibold">Create an account</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promo panel -->
+    <div class="col-lg-5 d-none d-lg-flex justify-content-center">
+        <div class="card border-0 p-5 text-center w-100" style="background:linear-gradient(145deg,rgba(47,109,241,0.08),rgba(47,109,241,0.03));border-radius:2rem;">
+            <div class="mb-4" style="font-size:3rem;"><i class="fa fa-rocket text-primary"></i></div>
+            <h3 class="fw-bold mb-2">Fast access to better roles.</h3>
+            <p class="text-muted mb-4">Update your profile, upload your resume, and get tailored recommendations.</p>
+            <ul class="list-unstyled text-start d-inline-block">
+                <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i>Personalized job alerts</li>
+                <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i>Saved jobs at a glance</li>
+                <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i>One-click applications</li>
+                <li class="mb-0"><i class="fa fa-check-circle text-primary me-2"></i>AI-powered recommendations</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

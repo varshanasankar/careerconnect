@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Jobs | CareerConnect{% endblock %}
+{% block meta_description %}Search and filter thousands of job listings on CareerConnect. Find your next career opportunity.{% endblock %}
+
+{% block content %}
+<div class="py-4 animate-fade-in">
+    <!-- Search bar -->
+    <section class="mb-4">
+        <div class="card shadow-sm p-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-3">
+                    <h4 class="fw-bold mb-1">Explore Jobs</h4>
+                    <p class="text-muted mb-0 small">Search by title, location, or category.</p>
+                </div>
+                <form method="GET" action="{{ url_for('jobs') }}" class="col-lg-9 row g-2" id="job-search-form">
+                    <div class="col-12 col-md-4">
+                        <input type="text" class="form-control" name="keyword" id="job-keyword"
+                               placeholder="Job title or company" value="{{ keyword }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <input type="text" class="form-control" name="location" id="job-location"
+                               placeholder="Location" value="{{ location }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <select class="form-select" name="category" id="job-category">
+                            <option value="">All Categories</option>
+                            <option value="IT" {% if category == "IT" %}selected{% endif %}>IT</option>
+                            <option value="Finance" {% if category == "Finance" %}selected{% endif %}>Finance</option>
+                            <option value="Design" {% if category == "Design" %}selected{% endif %}>Design</option>
+                            <option value="Marketing" {% if category == "Marketing" %}selected{% endif %}>Marketing</option>
+                            <option value="Healthcare" {% if category == "Healthcare" %}selected{% endif %}>Healthcare</option>
+                            <option value="Education" {% if category == "Education" %}selected{% endif %}>Education</option>
+                            <option value="Engineering" {% if category == "Engineering" %}selected{% endif %}>Engineering</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary" id="job-search-btn">
+                            <i class="fa fa-search me-1"></i>Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section>
+        {% if jobs %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="text-muted mb-0 small"><strong>{{ jobs|length }}</strong> job{{ 's' if jobs|length != 1 }} found</p>
+            {% if keyword or location or category %}
+            <a href="{{ url_for('jobs') }}" class="btn btn-outline-secondary btn-sm" id="job-clear-btn">
+                <i class="fa fa-times me-1"></i>Clear filters
+            </a>
+            {% endif %}
+        </div>
+        <div class="row g-4">
+            {% for job in jobs %}
+            <div class="col-lg-6">
+                <div class="card job-card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <h4 class="text-primary fw-bold mb-1">{{ job.title }}</h4>
+                                <p class="text-muted mb-0 small">{{ job.company_name }}</p>
+                            </div>
+                            <span class="badge-category">{{ job.category }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3 mb-3 text-muted small">
+                            <div><i class="fa fa-location-dot me-1"></i>{{ job.location }}</div>
+                            <div><i class="fa fa-dollar-sign me-1"></i>{{ job.salary }}</div>
+                            <div><i class="fa fa-briefcase me-1"></i>{{ job.experience }}</div>
+                        </div>
+                        <p class="mb-4 text-muted small">{{ job.description }}</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if session.get('user_id') %}
+                            <form action="{{ url_for('apply_job', job_id=job.id) }}" method="POST" class="m-0">
+                                <button class="btn btn-primary btn-sm" id="apply-job-{{ job.id }}">
+                                    <i class="fa fa-paper-plane me-1"></i>Apply
+                                </button>
+                            </form>
+                            <form action="{{ url_for('save_job', job_id=job.id) }}" method="POST" class="m-0">
+                                <button class="btn btn-outline-primary btn-sm" id="save-job-{{ job.id }}">
+                                    <i class="fa fa-bookmark me-1"></i>Save
+                                </button>
+                            </form>
+                            {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm" id="login-to-apply-{{ job.id }}">Login to Apply</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty-state-card">
+            <div class="mb-4" style="font-size:3rem;"><i class="fa fa-magnifying-glass text-muted opacity-40"></i></div>
+            <h4 class="fw-semibold">No jobs found</h4>
+            <p class="text-muted mb-4">Try a different keyword, or clear filters to see all opportunities.</p>
+            <a href="{{ url_for('jobs') }}" class="btn btn-primary px-5" id="jobs-clear-all-btn">Clear all filters</a>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

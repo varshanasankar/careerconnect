@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found | CareerConnect{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center text-center py-5 animate-fade-in" style="min-height:60vh;">
+    <div style="font-size:6rem;font-weight:900;background:linear-gradient(135deg,#2f6df1,#6ba3ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">404</div>
+    <h2 class="fw-bold mt-3 mb-2">Page not found</h2>
+    <p class="text-muted mb-5" style="max-width:28rem;">The page you're looking for doesn't exist or has been moved. Let's get you back on track.</p>
+    <div class="d-flex gap-3 flex-wrap justify-content-center">
+        <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg px-5" id="404-home-btn">
+            <i class="fa fa-home me-2"></i>Go Home
+        </a>
+        <a href="{{ url_for('jobs') }}" class="btn btn-outline-primary btn-lg" id="404-jobs-btn">
+            Browse Jobs
+        </a>
+    </div>
+</div>
+{% endblock %}

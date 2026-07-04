@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us | CareerConnect{% endblock %}
+{% block meta_description %}Get in touch with the CareerConnect team for support, feedback, or partnership inquiries.{% endblock %}
+
+{% block content %}
+<div class="row gy-4 py-5 animate-fade-in">
+    <!-- Contact form -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm p-4 p-md-5">
+            <h2 class="fw-bold mb-1"><i class="fa fa-envelope-open-text text-primary me-2"></i>Contact Us</h2>
+            <p class="text-muted mb-4">Have a question, feedback, or partnership request? We'd love to hear from you.</p>
+
+            <form id="contactForm" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" for="contact-name">Full Name</label>
+                        <input type="text" class="form-control" id="contact-name" placeholder="Your full name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" for="contact-email">Email</label>
+                        <input type="email" class="form-control" id="contact-email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium" for="contact-subject">Subject</label>
+                        <input type="text" class="form-control" id="contact-subject" placeholder="e.g. Job listing inquiry">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium" for="contact-message">Message</label>
+                        <textarea class="form-control" id="contact-message" rows="5"
+                                  placeholder="Write your message here…" required></textarea>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg px-5" id="contact-send-btn">
+                        <i class="fa fa-paper-plane me-1"></i>Send Message
+                    </button>
+                </div>
+                <div id="contact-success" class="alert alert-success mt-4 d-none" role="alert">
+                    <i class="fa fa-check-circle me-2"></i>Thank you! We'll get back to you soon.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info panel -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm p-4 p-md-5 h-100">
+            <h4 class="fw-bold mb-4">Get in touch</h4>
+            <ul class="list-unstyled mb-5">
+                <li class="mb-4 d-flex gap-3">
+                    <div style="width:2.5rem;height:2.5rem;background:rgba(47,109,241,0.1);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fa fa-envelope text-primary"></i>
+                    </div>
+                    <div>
+                        <p class="fw-semibold mb-0">Email</p>
+                        <p class="text-muted mb-0 small">support@careerconnect.io</p>
+                    </div>
+                </li>
+                <li class="mb-4 d-flex gap-3">
+                    <div style="width:2.5rem;height:2.5rem;background:rgba(47,109,241,0.1);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fa fa-clock text-primary"></i>
+                    </div>
+                    <div>
+                        <p class="fw-semibold mb-0">Support Hours</p>
+                        <p class="text-muted mb-0 small">Mon–Fri, 9 AM – 6 PM IST</p>
+                    </div>
+                </li>
+                <li class="d-flex gap-3">
+                    <div style="width:2.5rem;height:2.5rem;background:rgba(47,109,241,0.1);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fa fa-location-dot text-primary"></i>
+                    </div>
+                    <div>
+                        <p class="fw-semibold mb-0">Location</p>
+                        <p class="text-muted mb-0 small">Chennai, Tamil Nadu, India</p>
+                    </div>
+                </li>
+            </ul>
+            <div>
+                <p class="fw-semibold mb-3">Follow us</p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="btn btn-outline-primary btn-sm" id="contact-fb"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="btn btn-outline-primary btn-sm" id="contact-ig"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="btn btn-outline-primary btn-sm" id="contact-li"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("contactForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    // Simulate send — show success message
+    document.getElementById("contact-success").classList.remove("d-none");
+    this.querySelectorAll("input, textarea").forEach(function (el) { el.value = ""; });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Recommendations | CareerConnect{% endblock %}
+{% block meta_description %}Get AI-powered job recommendations based on your resume keywords on CareerConnect.{% endblock %}
+
+{% block content %}
+<div class="py-4 animate-fade-in">
+    <div class="card shadow-sm p-4 p-md-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="fa fa-star text-primary me-2"></i>Recommendations</h2>
+                <p class="text-muted mb-0">Your resume is analyzed to surface the best matching jobs.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ url_for('profile') }}" class="btn btn-outline-primary" id="rec-update-profile-btn">Update profile</a>
+                <a href="{{ url_for('resume') }}" class="btn btn-primary" id="rec-upload-resume-btn"><i class="fa fa-upload me-1"></i>Upload resume</a>
+            </div>
+        </div>
+
+        {% if not resume %}
+        <div class="empty-state-card p-5">
+            <div class="mb-4" style="font-size:3rem;"><i class="fa fa-file-arrow-up text-primary opacity-50"></i></div>
+            <h5 class="fw-semibold">Upload your resume first</h5>
+            <p class="text-muted mb-4">Upload a PDF or DOCX resume so CareerConnect can extract keywords and match jobs for you.</p>
+            <a href="{{ url_for('resume') }}" class="btn btn-primary px-5" id="rec-empty-upload-btn">Upload Resume</a>
+        </div>
+
+        {% elif extraction_failed %}
+        <div class="empty-state-card p-5">
+            <div class="mb-4" style="font-size:3rem;"><i class="fa fa-triangle-exclamation text-warning opacity-75"></i></div>
+            <h5 class="fw-semibold">Resume extraction failed</h5>
+            <p class="text-muted mb-4">We couldn't read your resume. Please upload a valid PDF or DOCX file.</p>
+            <a href="{{ url_for('resume') }}" class="btn btn-primary px-5" id="rec-reupload-btn">Re-upload Resume</a>
+        </div>
+
+        {% elif jobs %}
+        <div class="mb-5">
+            <h5 class="fw-semibold mb-1">Matched keywords</h5>
+            <p class="text-muted mb-3 small">Extracted from your resume — used to rank job matches.</p>
+            <div class="d-flex flex-wrap gap-2">
+                {% for keyword in keywords %}
+                <span class="badge-category">{{ keyword }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for job in jobs %}
+            <div class="col-lg-6">
+                <div class="card job-card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <h4 class="text-primary fw-bold mb-1">{{ job.title }}</h4>
+                                <p class="text-muted mb-0">{{ job.company_name }}</p>
+                            </div>
+                            <span class="badge-category">{{ job.category }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3 mb-3 text-muted small">
+                            <div><i class="fa fa-location-dot me-1"></i>{{ job.location }}</div>
+                            <div><i class="fa fa-dollar-sign me-1"></i>{{ job.salary }}</div>
+                            <div><i class="fa fa-briefcase me-1"></i>{{ job.experience }}</div>
+                        </div>
+                        <p class="mb-4 text-muted small">{{ job.description }}</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{{ url_for('jobs') }}" class="btn btn-outline-primary btn-sm">View job</a>
+                            <form action="{{ url_for('apply_job', job_id=job.id) }}" method="POST" class="m-0">
+                                <button class="btn btn-primary btn-sm"><i class="fa fa-paper-plane me-1"></i>Apply</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty-state-card p-5">
+            <div class="mb-4" style="font-size:3rem;"><i class="fa fa-magnifying-glass text-muted opacity-50"></i></div>
+            <h5 class="fw-semibold">No matching jobs found</h5>
+            <p class="text-muted mb-4">Try uploading a different resume or browse all available roles.</p>
+            <a href="{{ url_for('jobs') }}" class="btn btn-primary px-5" id="rec-browse-btn">Browse All Jobs</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

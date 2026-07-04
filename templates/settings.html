@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}Settings | CareerConnect{% endblock %}
+{% block meta_description %}Manage your notification preferences and job preferences on CareerConnect.{% endblock %}
+
+{# Reuse dashboard layout — suppress global navbar/footer #}
+{% block navbar %}{% endblock %}
+{% block flash_messages %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    /* ── Settings-specific styles ── */
+    .settings-wrapper {
+        max-width: 780px;
+    }
+    .settings-section {
+        background: #fff;
+        border-radius: 1.75rem;
+        box-shadow: 0 12px 40px rgba(15,23,42,0.08);
+        padding: 2rem 2.25rem;
+        margin-bottom: 1.5rem;
+    }
+    .settings-section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .settings-section-title i {
+        color: #2f6df1;
+        font-size: 1rem;
+    }
+    .settings-divider {
+        border: none;
+        border-top: 1.5px solid #eef4ff;
+        margin: 1.25rem 0;
+    }
+
+    /* Toggle switch */
+    .form-switch .form-check-input {
+        width: 2.6em;
+        height: 1.4em;
+        cursor: pointer;
+    }
+    .form-switch .form-check-input:checked {
+        background-color: #2f6df1;
+        border-color: #2f6df1;
+    }
+    .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+    }
+    .toggle-row + .toggle-row {
+        border-top: 1px solid #f0f4ff;
+    }
+    .toggle-label {
+        flex: 1;
+    }
+    .toggle-label strong {
+        display: block;
+        font-size: 0.93rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+    .toggle-label span {
+        font-size: 0.82rem;
+        color: #64748b;
+    }
+
+    /* Select & pill-tag style for job type */
+    .pref-select {
+        border-radius: 0.75rem;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.6rem 1rem;
+        font-size: 0.93rem;
+        background: #f7faff;
+        transition: border-color 0.2s;
+        width: 100%;
+    }
+    .pref-select:focus {
+        border-color: #2f6df1;
+        box-shadow: 0 0 0 3px rgba(47,109,241,0.12);
+        outline: none;
+    }
+    .form-label-sm {
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.35rem;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .job-type-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 0.4rem;
+    }
+    .job-type-chip {
+        display: none;
+    }
+    .job-type-chip + label {
+        padding: 0.45rem 1.1rem;
+        border-radius: 999px;
+        border: 1.5px solid #e2e8f0;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        background: #f7faff;
+        color: #475569;
+        transition: all 0.18s;
+        user-select: none;
+    }
+    .job-type-chip:checked + label {
+        background: #2f6df1;
+        border-color: #2f6df1;
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(47,109,241,0.25);
+    }
+
+    /* Save button */
+    .btn-save {
+        background: linear-gradient(135deg, #2f6df1, #4f8fff);
+        border: none;
+        border-radius: 999px;
+        color: #fff;
+        font-weight: 600;
+        padding: 0.65rem 2.2rem;
+        font-size: 0.95rem;
+        transition: opacity 0.2s, transform 0.18s;
+        box-shadow: 0 6px 20px rgba(47,109,241,0.28);
+    }
+    .btn-save:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        color: #fff;
+    }
+
+    /* Page header */
+    .settings-page-header {
+        margin-bottom: 1.75rem;
+    }
+    .settings-page-header h4 {
+        font-weight: 800;
+        margin-bottom: 0.15rem;
+    }
+    .settings-page-header p {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* Flash inside layout */
+    .dash-flash {
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block page_wrapper %}
+<div class="wrapper">
+    <!-- Sidebar (same as dashboard) -->
+    <aside class="sidebar" id="sidebar" aria-label="Dashboard navigation">
+        <h3 class="logo">CareerConnect</h3>
+        <nav>
+            <a href="{{ url_for('dashboard') }}" id="dash-nav-home"><i class="fa fa-home"></i>Dashboard</a>
+            <a href="{{ url_for('profile') }}" id="dash-nav-profile"><i class="fa fa-user"></i>Profile</a>
+            <a href="{{ url_for('jobs') }}" id="dash-nav-jobs"><i class="fa fa-briefcase"></i>Browse Jobs</a>
+            <a href="{{ url_for('saved_jobs') }}" id="dash-nav-saved"><i class="fa fa-bookmark"></i>Saved Jobs</a>
+            <a href="{{ url_for('resume') }}" id="dash-nav-resume"><i class="fa fa-file-alt"></i>Resume</a>
+            <a href="{{ url_for('recommendations') }}" id="dash-nav-recs"><i class="fa fa-star"></i>Recommendations</a>
+            <a href="{{ url_for('settings') }}" class="active" id="dash-nav-settings"><i class="fa fa-gear"></i>Settings</a>
+            <a href="{{ url_for('logout') }}" class="logout-link" id="dash-nav-logout"><i class="fa fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main">
+        <!-- Top navbar -->
+        <header class="navbar-custom">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-primary" id="menu-btn" aria-label="Toggle sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <div>
+                    <h5 class="mb-0">Settings</h5>
+                    <small class="text-muted">Manage your preferences and notifications.</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="fw-semibold d-none d-md-inline">Hello, {{ session['name'].split()[0] }} 👋</span>
+            </div>
+        </header>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info alert-dismissible fade show dash-flash" role="alert">
+                    {% for message in messages %}<div>{{ message }}</div>{% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('settings') }}">
+        <div class="settings-wrapper">
+
+            <!-- ── NOTIFICATIONS ── -->
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fa fa-bell"></i> Notification Preferences
+                </div>
+                <p class="text-muted small mb-3">Choose which updates you'd like to receive.</p>
+                <hr class="settings-divider mt-1">
+
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Job Alert Emails</strong>
+                        <span>Get notified when new jobs match your skills and preferences.</span>
+                    </div>
+                    <div class="form-check form-switch ms-3">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               name="notif_job_alerts" id="notif_job_alerts"
+                               {% if settings and settings.notif_job_alerts %}checked{% endif %}>
+                    </div>
+                </div>
+
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Application Status Updates</strong>
+                        <span>Receive an email when your application status changes.</span>
+                    </div>
+                    <div class="form-check form-switch ms-3">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               name="notif_app_status" id="notif_app_status"
+                               {% if settings and settings.notif_app_status %}checked{% endif %}>
+                    </div>
+                </div>
+
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Weekly Job Digest</strong>
+                        <span>A weekly summary of top recommended jobs in your field.</span>
+                    </div>
+                    <div class="form-check form-switch ms-3">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               name="notif_weekly_digest" id="notif_weekly_digest"
+                               {% if settings and settings.notif_weekly_digest %}checked{% endif %}>
+                    </div>
+                </div>
+
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <strong>Profile View Alerts</strong>
+                        <span>Know when recruiters view your profile.</span>
+                    </div>
+                    <div class="form-check form-switch ms-3">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               name="notif_profile_views" id="notif_profile_views"
+                               {% if settings and settings.notif_profile_views %}checked{% endif %}>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── JOB PREFERENCES ── -->
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fa fa-sliders"></i> Job Preferences
+                </div>
+                <p class="text-muted small mb-3">Help us surface the most relevant roles for you.</p>
+                <hr class="settings-divider mt-1">
+
+                <div class="row g-4">
+                    <!-- Preferred Category -->
+                    <div class="col-md-6">
+                        <label class="form-label-sm" for="pref_category">Preferred Category</label>
+                        <select class="pref-select" name="pref_category" id="pref_category">
+                            <option value="">— Any Category —</option>
+                            {% set cats = ['IT', 'Finance', 'Design', 'Marketing', 'Healthcare', 'Education', 'Engineering', 'Sales'] %}
+                            {% for cat in cats %}
+                            <option value="{{ cat }}"
+                                {% if settings and settings.pref_category == cat %}selected{% endif %}>
+                                {{ cat }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Preferred Location -->
+                    <div class="col-md-6">
+                        <label class="form-label-sm" for="pref_location">Preferred Location</label>
+                        <input type="text" class="pref-select" name="pref_location" id="pref_location"
+                               placeholder="e.g. Chennai, Remote, Bangalore…"
+                               value="{{ settings.pref_location if settings and settings.pref_location else '' }}">
+                    </div>
+
+                    <!-- Expected Salary -->
+                    <div class="col-md-6">
+                        <label class="form-label-sm" for="pref_salary">Expected Salary Range</label>
+                        <select class="pref-select" name="pref_salary" id="pref_salary">
+                            <option value="">— Any Salary —</option>
+                            {% set salaries = ['Below $50k', '$50k - $80k', '$80k - $100k', '$100k - $130k', '$130k - $160k', '$160k+'] %}
+                            {% for s in salaries %}
+                            <option value="{{ s }}"
+                                {% if settings and settings.pref_salary == s %}selected{% endif %}>
+                                {{ s }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Experience Level -->
+                    <div class="col-md-6">
+                        <label class="form-label-sm" for="pref_experience">Experience Level</label>
+                        <select class="pref-select" name="pref_experience" id="pref_experience">
+                            <option value="">— Any Level —</option>
+                            {% for lvl in ['Fresher (0-1 yr)', 'Junior (1-3 yrs)', 'Mid-level (3-6 yrs)', 'Senior (6+ yrs)'] %}
+                            <option value="{{ lvl }}"
+                                {% if settings and settings.pref_experience == lvl %}selected{% endif %}>
+                                {{ lvl }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Job Type chips -->
+                    <div class="col-12">
+                        <label class="form-label-sm">Job Type</label>
+                        <div class="job-type-grid">
+                            {% set types = ['Full-time', 'Part-time', 'Remote', 'Hybrid', 'Internship', 'Contract'] %}
+                            {% set current_type = settings.pref_job_type if settings else '' %}
+                            {% for t in types %}
+                            <input class="job-type-chip" type="radio" name="pref_job_type"
+                                   id="jt_{{ loop.index }}" value="{{ t }}"
+                                   {% if current_type == t %}checked{% endif %}>
+                            <label for="jt_{{ loop.index }}">{{ t }}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="d-flex justify-content-end pb-3">
+                <button type="submit" class="btn-save" id="settings-save-btn">
+                    <i class="fa fa-floppy-disk me-2"></i>Save Settings
+                </button>
+            </div>
+
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock page_wrapper %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

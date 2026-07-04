@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | CareerConnect{% endblock %}
+{% block meta_description %}Update your CareerConnect profile to get better job matches.{% endblock %}
+
+{% block content %}
+<div class="row gy-4 py-4 animate-fade-in">
+    <div class="col-lg-8">
+        <div class="card shadow-sm p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1"><i class="fa fa-user-circle text-primary me-2"></i>My Profile</h2>
+                    <p class="text-muted mb-0">Keep your information current to get better job matches.</p>
+                </div>
+                <a href="{{ url_for('resume') }}" class="btn btn-outline-primary btn-sm" id="profile-upload-btn">
+                    <i class="fa fa-upload me-1"></i>Upload Resume
+                </a>
+            </div>
+
+            <form method="POST" action="{{ url_for('profile') }}" id="profileForm" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" for="fullname">Full Name</label>
+                        <input type="text" name="fullname" id="fullname" class="form-control"
+                               value="{{ user.fullname | default('') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium">Email</label>
+                        <input type="email" class="form-control" value="{{ user.email | default('') }}" readonly
+                               style="background:#f8fbff; cursor:not-allowed;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" for="phone">Phone</label>
+                        <input type="text" name="phone" id="phone" class="form-control"
+                               value="{{ user.phone | default('') }}" placeholder="10-digit mobile number">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-medium" for="location">Location</label>
+                        <input type="text" name="location" id="location" class="form-control"
+                               value="{{ user.location | default('') }}" placeholder="City, State">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium" for="skills">Skills</label>
+                        <textarea name="skills" id="skills" class="form-control" rows="3"
+                                  placeholder="e.g. Python, SQL, Machine Learning">{{ user.skills | default('') }}</textarea>
+                        <small class="text-muted">Separate skills with commas for best results.</small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium" for="education">Education</label>
+                        <textarea name="education" id="education" class="form-control" rows="3"
+                                  placeholder="e.g. B.Tech in Computer Science, MIT (2020)">{{ user.education | default('') }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium" for="experience">Experience</label>
+                        <textarea name="experience" id="experience" class="form-control" rows="3"
+                                  placeholder="e.g. 2 years as Backend Developer at XYZ Corp">{{ user.experience | default('') }}</textarea>
+                    </div>
+                </div>
+                <div class="text-end mt-4">
+                    <button class="btn btn-primary px-5" type="submit" id="profile-save-btn">
+                        <i class="fa fa-save me-1"></i>Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="fa fa-circle-info text-primary me-2"></i>Profile tips</h5>
+            <p class="text-muted small mb-4">A complete profile helps CareerConnect recommend better jobs and improves your chances of getting shortlisted.</p>
+            <ul class="list-unstyled mb-4">
+                <li class="mb-3 d-flex gap-2">
+                    <i class="fa fa-check-circle text-primary mt-1"></i>
+                    <span class="text-muted small">List all technical and soft skills you have</span>
+                </li>
+                <li class="mb-3 d-flex gap-2">
+                    <i class="fa fa-check-circle text-primary mt-1"></i>
+                    <span class="text-muted small">Add your most recent work experience first</span>
+                </li>
+                <li class="mb-3 d-flex gap-2">
+                    <i class="fa fa-check-circle text-primary mt-1"></i>
+                    <span class="text-muted small">Keep your location up-to-date for local matches</span>
+                </li>
+                <li class="mb-3 d-flex gap-2">
+                    <i class="fa fa-check-circle text-primary mt-1"></i>
+                    <span class="text-muted small">Upload your latest resume for AI recommendations</span>
+                </li>
+            </ul>
+            <a href="{{ url_for('recommendations') }}" class="btn btn-outline-primary w-100" id="profile-rec-btn">
+                <i class="fa fa-star me-1"></i>View Recommendations
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

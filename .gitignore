@@ -1,0 +1,7 @@
+Set-Location 'C:\Users\hp\Downloads\CareerConnect'
+.\venv\Scripts\Activate.ps1
+.\venv\Scripts\python.exe app.py.env
+__pycache__/
+*.pyc
+venv/
+.DS_Store

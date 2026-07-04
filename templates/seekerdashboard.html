@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | CareerConnect{% endblock %}
+{% block meta_description %}Your CareerConnect dashboard — track applications, saved jobs, and recommendations.{% endblock %}
+
+{# Dashboard has its own sidebar nav — suppress the global navbar, footer, and wrapper #}
+{% block navbar %}{% endblock %}
+{% block flash_messages %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block page_wrapper %}
+<div class="wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Dashboard navigation">
+        <h3 class="logo">CareerConnect</h3>
+        <nav>
+            <a href="{{ url_for('dashboard') }}" class="active" id="dash-nav-home"><i class="fa fa-home"></i>Dashboard</a>
+            <a href="{{ url_for('profile') }}" id="dash-nav-profile"><i class="fa fa-user"></i>Profile</a>
+            <a href="{{ url_for('jobs') }}" id="dash-nav-jobs"><i class="fa fa-briefcase"></i>Browse Jobs</a>
+            <a href="{{ url_for('saved_jobs') }}" id="dash-nav-saved"><i class="fa fa-bookmark"></i>Saved Jobs</a>
+            <a href="{{ url_for('resume') }}" id="dash-nav-resume"><i class="fa fa-file-alt"></i>Resume</a>
+            <a href="{{ url_for('recommendations') }}" id="dash-nav-recs"><i class="fa fa-star"></i>Recommendations</a>
+            <a href="{{ url_for('settings') }}" id="dash-nav-settings"><i class="fa fa-gear"></i>Settings</a>
+            <a href="{{ url_for('logout') }}" class="logout-link" id="dash-nav-logout"><i class="fa fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main">
+        <!-- Top navbar -->
+        <header class="navbar-custom">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-primary" id="menu-btn" aria-label="Toggle sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <div>
+                    <h5 class="mb-0">Your Dashboard</h5>
+                    <small class="text-muted">Track your applications, saved jobs, and next steps.</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="fw-semibold d-none d-md-inline">Hello, {{ session['name'].split()[0] }} 👋</span>
+                <a href="{{ url_for('jobs') }}" class="btn btn-primary btn-sm" id="dash-browse-jobs-btn"><i class="fa fa-search me-1"></i>Browse Jobs</a>
+            </div>
+        </header>
+
+        {# Flash messages inside dashboard (global block is suppressed) #}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+                    {% for message in messages %}<div>{{ message }}</div>{% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Stat cards -->
+        <div class="dashboard-top">
+            <div class="dashboard-card">
+                <i class="fa fa-paper-plane"></i>
+                <h2 data-count="12">0</h2>
+                <p>Applications Sent</p>
+            </div>
+            <div class="dashboard-card">
+                <i class="fa fa-bookmark"></i>
+                <h2 data-count="8">0</h2>
+                <p>Saved Jobs</p>
+            </div>
+            <div class="dashboard-card">
+                <i class="fa fa-bell"></i>
+                <h2 data-count="5">0</h2>
+                <p>Notifications</p>
+            </div>
+        </div>
+
+        <!-- Recent applications table -->
+        <div class="table-card mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-4 flex-column flex-md-row gap-3">
+                    <div>
+                        <h4 class="mb-1 fw-bold">Recent Applications</h4>
+                        <p class="text-muted mb-0 small">Quick summary of your latest job activity.</p>
+                    </div>
+                    <a href="{{ url_for('jobs') }}" class="btn btn-outline-primary btn-sm" id="dash-more-jobs-btn">Browse more jobs</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Job</th>
+                                <th>Company</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-medium">Python Developer</td>
+                                <td class="text-muted">Google</td>
+                                <td class="text-muted small">Jun 28, 2025</td>
+                                <td><span class="badge bg-success">Shortlisted</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium">Frontend Developer</td>
+                                <td class="text-muted">Microsoft</td>
+                                <td class="text-muted small">Jun 25, 2025</td>
+                                <td><span class="badge bg-warning text-dark">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium">Backend Engineer</td>
+                                <td class="text-muted">Amazon</td>
+                                <td class="text-muted small">Jun 20, 2025</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick actions row -->
+        <div class="row g-3">
+            <div class="col-md-4">
+                <a href="{{ url_for('profile') }}" class="card p-4 text-decoration-none h-100 d-block" style="transition:transform 0.2s;border-radius:1.5rem;" id="dash-quick-profile">
+                    <i class="fa fa-user-pen fa-lg text-primary mb-3 d-block"></i>
+                    <h6 class="fw-bold mb-1">Update Profile</h6>
+                    <p class="text-muted small mb-0">Keep your information current for better matches.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('resume') }}" class="card p-4 text-decoration-none h-100 d-block" style="transition:transform 0.2s;border-radius:1.5rem;" id="dash-quick-resume">
+                    <i class="fa fa-file-upload fa-lg text-primary mb-3 d-block"></i>
+                    <h6 class="fw-bold mb-1">Upload Resume</h6>
+                    <p class="text-muted small mb-0">Attach your latest CV to apply faster.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('recommendations') }}" class="card p-4 text-decoration-none h-100 d-block" style="transition:transform 0.2s;border-radius:1.5rem;" id="dash-quick-recs">
+                    <i class="fa fa-wand-magic-sparkles fa-lg text-primary mb-3 d-block"></i>
+                    <h6 class="fw-bold mb-1">Get Recommendations</h6>
+                    <p class="text-muted small mb-0">AI-powered job matches based on your resume.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock page_wrapper %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
