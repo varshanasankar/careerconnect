@@ -1,7 +1,29 @@
-Set-Location 'C:\Users\hp\Downloads\CareerConnect'
-.\venv\Scripts\Activate.ps1
-.\venv\Scripts\python.exe app.py.env
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.pyw
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
 venv/
+env/
+.env
+
+# Database files
+*.db
+*.sqlite3
+
+# OS Files
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
